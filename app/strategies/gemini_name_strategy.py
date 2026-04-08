@@ -64,7 +64,7 @@ class GeminiNameStrategy(ExtractionStrategy[str | None]):
     # ------------------------------------------------------------------
 
     @classmethod
-    def from_api_key(cls, api_key: str, model: str = "gemini-1.5-flash") -> "GeminiNameStrategy":
+    def from_api_key(cls, api_key: str, model: str = "gemini-2.5-flash") -> "GeminiNameStrategy":
         """Convenience constructor that creates a real Gemini client.
 
         Parameters
