@@ -1,4 +1,4 @@
 pymupdf
 python-docx
-google-generativeai
+google-genai
 pytest

@@ -75,11 +75,11 @@ class GeminiNameStrategy(ExtractionStrategy[str | None]):
         model:
             Gemini model identifier.
         """
-        import google.generativeai as genai  # lazy import
+        from google import genai  # lazy import
 
-        genai.configure(api_key=api_key)
-        client = genai.GenerativeModel(model)
-        return cls(client)
+        client = genai.Client(api_key=api_key)
+        # Wrap in an adapter so the returned object satisfies LLMClient
+        return cls(_GenAIClientAdapter(client, model))
 
     # ------------------------------------------------------------------
     # Strategy implementation
@@ -104,6 +104,30 @@ class GeminiNameStrategy(ExtractionStrategy[str | None]):
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
+
+class _GenAIClientAdapter:
+    """Adapts the google-genai SDK to the LLMClient protocol.
+
+    The new ``google.genai`` SDK uses ``client.models.generate_content``
+    rather than a model object with ``generate_content``.  This thin adapter
+    bridges the difference without changing GeminiNameStrategy or the tests.
+    """
+
+    def __init__(self, client, model: str) -> None:
+        self._client = client
+        self._model = model
+
+    def generate_content(self, prompt: str) -> object:
+        response = self._client.models.generate_content(
+            model=self._model,
+            contents=prompt,
+        )
+
+        class _Response:
+            text = response.text
+
+        return _Response()
+
 
 def _clean_name(raw: str) -> str | None:
     """Strip whitespace, quotes, and common LLM artifacts from name output."""
