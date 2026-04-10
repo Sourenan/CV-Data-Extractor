@@ -12,7 +12,6 @@ import pytest
 from app.exceptions import FileParsingError
 from app.parsers.pdf_parser import PDFParser
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

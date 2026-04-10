@@ -12,7 +12,6 @@ import pytest
 from app.exceptions import FileParsingError
 from app.parsers.word_parser import WordParser
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

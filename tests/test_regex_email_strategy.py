@@ -2,7 +2,6 @@
 Tests for RegexEmailStrategy.
 """
 
-import pytest
 
 from app.strategies.regex_email_strategy import RegexEmailStrategy
 

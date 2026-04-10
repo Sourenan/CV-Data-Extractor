@@ -98,3 +98,36 @@ class TestRuleBasedSkillsStrategy:
         result = self.strategy.extract(text)
         assert "Machine Learning" in result
         assert "Deep Learning" in result
+
+    # ------------------------------------------------------------------
+    # from_file factory
+    # ------------------------------------------------------------------
+
+    def test_from_file_loads_catalog_correctly(self, tmp_path):
+        catalog_file = tmp_path / "skills.json"
+        catalog_file.write_text('["Rust", "Elixir", "Haskell"]', encoding="utf-8")
+
+        strategy = RuleBasedSkillsStrategy.from_file(str(catalog_file))
+        result = strategy.extract("I know Rust and Elixir but not Java.")
+
+        assert "Rust" in result
+        assert "Elixir" in result
+        assert "Java" not in result  # not in custom catalog
+
+    def test_from_file_raises_for_missing_file(self):
+        with pytest.raises(ValueError, match="not found"):
+            RuleBasedSkillsStrategy.from_file("/nonexistent/path/skills.json")
+
+    def test_from_file_raises_for_invalid_json(self, tmp_path):
+        bad_file = tmp_path / "bad.json"
+        bad_file.write_text("this is not json", encoding="utf-8")
+
+        with pytest.raises(ValueError, match="not valid JSON"):
+            RuleBasedSkillsStrategy.from_file(str(bad_file))
+
+    def test_from_file_raises_for_non_list_json(self, tmp_path):
+        bad_file = tmp_path / "bad.json"
+        bad_file.write_text('{"skill": "Python"}', encoding="utf-8")
+
+        with pytest.raises(ValueError, match="array of strings"):
+            RuleBasedSkillsStrategy.from_file(str(bad_file))

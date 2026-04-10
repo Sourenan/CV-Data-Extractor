@@ -5,10 +5,8 @@ No real API key or SDK is needed.  We pass lightweight fake clients that
 satisfy the LLMClient Protocol.
 """
 
-import pytest
 
 from app.strategies.gemini_name_strategy import GeminiNameStrategy, LLMClient
-
 
 # ---------------------------------------------------------------------------
 # Fake clients

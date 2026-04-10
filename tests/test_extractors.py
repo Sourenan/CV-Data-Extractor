@@ -12,7 +12,6 @@ from app.extractors.email_extractor import EmailExtractor
 from app.extractors.name_extractor import NameExtractor
 from app.extractors.skills_extractor import SkillsExtractor
 
-
 SAMPLE_TEXT = "Jane Doe\njane@example.com\nPython Docker"
 
 

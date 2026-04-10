@@ -4,11 +4,8 @@ Tests for ResumeExtractor.
 
 from unittest.mock import MagicMock
 
-import pytest
-
 from app.models import ResumeData
 from app.services.resume_extractor import ResumeExtractor
-
 
 # ---------------------------------------------------------------------------
 # Helpers

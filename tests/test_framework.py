@@ -10,7 +10,6 @@ from app.exceptions import FileParsingError, UnsupportedFileTypeError
 from app.framework import ResumeParserFramework
 from app.models import ResumeData
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

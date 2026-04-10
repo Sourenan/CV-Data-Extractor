@@ -16,7 +16,7 @@ installed, as long as you never call ``from_api_key`` in those tests.
 from __future__ import annotations
 
 import re
-from typing import Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 
 from app.extractors.base import ExtractionStrategy
 from app.utils.logger import get_logger
@@ -64,7 +64,7 @@ class GeminiNameStrategy(ExtractionStrategy[str | None]):
     # ------------------------------------------------------------------
 
     @classmethod
-    def from_api_key(cls, api_key: str, model: str = "gemini-2.5-flash") -> "GeminiNameStrategy":
+    def from_api_key(cls, api_key: str, model: str = "gemini-2.5-flash") -> GeminiNameStrategy:
         """Convenience constructor that creates a real Gemini client.
 
         Parameters
@@ -113,7 +113,7 @@ class _GenAIClientAdapter:
     bridges the difference without changing GeminiNameStrategy or the tests.
     """
 
-    def __init__(self, client, model: str) -> None:
+    def __init__(self, client: Any, model: str) -> None:
         self._client = client
         self._model = model
 

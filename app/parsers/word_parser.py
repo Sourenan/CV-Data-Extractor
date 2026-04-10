@@ -9,7 +9,7 @@ because resumes often use tables for skills or contact info.
 import os
 
 from docx import Document
-from docx.oxml.ns import qn
+from docx.document import Document as _DocxDocument
 
 from app.exceptions import FileParsingError
 from app.parsers.base import FileParser
@@ -19,7 +19,7 @@ from app.utils.text_utils import normalize_whitespace
 logger = get_logger(__name__)
 
 
-def _extract_table_text(doc: Document) -> list[str]:
+def _extract_table_text(doc: _DocxDocument) -> list[str]:
     """Return all non-empty text cells from every table in *doc*."""
     cell_texts: list[str] = []
     for table in doc.tables:

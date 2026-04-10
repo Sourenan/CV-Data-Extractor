@@ -33,11 +33,11 @@ except FileNotFoundError:
     raise RuntimeError(
         f"Default skill catalog not found: '{_DEFAULT_CATALOG_PATH}'. "
         "Ensure 'app/strategies/data/default_skills.json' is present in the repository."
-    )
+    ) from None
 except json.JSONDecodeError as _exc:
     raise RuntimeError(
         f"Default skill catalog is not valid JSON: '{_DEFAULT_CATALOG_PATH}' — {_exc}"
-    )
+    ) from _exc
 
 if not isinstance(_raw, list) or not all(isinstance(s, str) for s in _raw):
     raise RuntimeError(
@@ -75,7 +75,7 @@ class RuleBasedSkillsStrategy(ExtractionStrategy[list[str]]):
         ]
 
     @classmethod
-    def from_file(cls, path: str) -> "RuleBasedSkillsStrategy":
+    def from_file(cls, path: str) -> RuleBasedSkillsStrategy:
         """Load a skill catalog from a JSON file and return a new instance.
 
         The file must contain a JSON array of strings, e.g.::
@@ -107,9 +107,9 @@ class RuleBasedSkillsStrategy(ExtractionStrategy[list[str]]):
             with open(path, encoding="utf-8") as fh:
                 data = json.load(fh)
         except FileNotFoundError:
-            raise ValueError(f"Skill catalog file not found: '{path}'")
+            raise ValueError(f"Skill catalog file not found: '{path}'") from None
         except json.JSONDecodeError as exc:
-            raise ValueError(f"Skill catalog file is not valid JSON: '{path}' — {exc}")
+            raise ValueError(f"Skill catalog file is not valid JSON: '{path}' — {exc}") from exc
 
         if not isinstance(data, list) or not all(isinstance(s, str) for s in data):
             raise ValueError(

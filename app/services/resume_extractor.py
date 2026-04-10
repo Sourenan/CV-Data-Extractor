@@ -4,6 +4,8 @@ ResumeExtractor — orchestration coordinator for field extraction.
 
 from __future__ import annotations
 
+from typing import Any
+
 from app.extractors.base import FieldExtractor
 from app.models import ResumeData
 from app.utils.logger import get_logger
@@ -34,7 +36,7 @@ class ResumeExtractor:
             }
     """
 
-    def __init__(self, extractors: dict[str, FieldExtractor]) -> None:
+    def __init__(self, extractors: dict[str, FieldExtractor[Any]]) -> None:
         self._extractors = extractors
 
     def extract(self, text: str) -> ResumeData:
@@ -67,7 +69,7 @@ class ResumeExtractor:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _run(self, field: str, text: str, *, default):
+    def _run(self, field: str, text: str, *, default: Any) -> Any:
         """Call the extractor for *field* and return its result.
 
         Falls back to *default* if no extractor is registered for the
