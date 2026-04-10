@@ -1,0 +1,17 @@
+[
+  "Python", "Java", "JavaScript", "TypeScript", "C", "C++", "C#",
+  "Go", "Rust", "Ruby", "Swift", "Kotlin", "Scala", "R", "MATLAB",
+  "Bash", "Shell", "PowerShell", "SQL", "HTML", "CSS",
+  "Django", "Flask", "FastAPI", "Spring", "React", "Angular", "Vue",
+  "Node.js", "Express", "Next.js", "NumPy", "Pandas", "Scikit-learn",
+  "TensorFlow", "PyTorch", "Keras", "Hugging Face", "LangChain",
+  "Machine Learning", "Deep Learning", "NLP", "Computer Vision",
+  "LLM", "RAG", "Fine-tuning", "Data Analysis", "Data Engineering",
+  "Feature Engineering", "Model Deployment",
+  "AWS", "Azure", "GCP", "Docker", "Kubernetes", "Terraform",
+  "CI/CD", "GitHub Actions", "Jenkins",
+  "PostgreSQL", "MySQL", "SQLite", "MongoDB", "Redis", "Elasticsearch",
+  "DynamoDB", "BigQuery",
+  "REST", "GraphQL", "gRPC", "Microservices", "Agile", "Scrum",
+  "TDD", "OOP", "Design Patterns", "Git"
+]

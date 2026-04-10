@@ -1,4 +1,6 @@
 pymupdf
 python-docx
 google-genai
+
+# Development / testing
 pytest

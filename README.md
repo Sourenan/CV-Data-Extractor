@@ -61,7 +61,7 @@ app/
 examples/
 ├── parse_pdf_example.py
 └── parse_word_example.py
-tests/                               # 64 pytest tests, all passing
+tests/                               # 71 pytest tests, all passing
 ```
 
 ---
@@ -131,7 +131,7 @@ python examples/parse_word_example.py path/to/resume.docx
 pytest tests/ -v
 ```
 
-64 tests covering happy paths, edge cases, and failure modes. All LLM calls are mocked — no API key required.
+71 tests covering happy paths, edge cases, and failure modes. All LLM calls are mocked — no API key required.
 
 ---
 
@@ -167,8 +167,7 @@ pytest tests/ -v
 
 ## Future improvements
 
-- Add a `ParserFactory` that selects the correct parser based on file extension.
 - Implement an NER-based name strategy as an alternative to the LLM.
 - Add confidence scores to extracted fields.
 - Support `.odt` and plain-text `.txt` resume formats.
-- Extend `RuleBasedSkillsStrategy` to load catalogs from external files or APIs.
+- Add OCR support for scanned PDF resumes.
