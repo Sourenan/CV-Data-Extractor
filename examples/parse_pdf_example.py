@@ -1,15 +1,16 @@
 """
 Example: Parse a PDF resume using the full framework.
 
-To use a real Gemini model, replace the stub client with:
+Set the GEMINI_API_KEY environment variable before running:
 
-    import os
-    strategy = GeminiNameStrategy.from_api_key(os.environ["GEMINI_API_KEY"])
+    $env:GEMINI_API_KEY = "your-api-key"   # PowerShell
+    export GEMINI_API_KEY="your-api-key"    # bash/zsh
 
 Never hard-code your API key in source code.
 """
 
 import json
+import os
 import sys
 
 from app.extractors.email_extractor import EmailExtractor
@@ -24,18 +25,22 @@ from app.strategies.rule_based_skills_strategy import RuleBasedSkillsStrategy
 
 
 # ---------------------------------------------------------------------------
-# Stub Gemini client — safe for demos and public repos.
-# Replace with GeminiNameStrategy.from_api_key(...) in production.
+# Name strategy — uses real Gemini if GEMINI_API_KEY is set, stub otherwise.
 # ---------------------------------------------------------------------------
 
-class _StubLLMClient:
-    """Returns a placeholder name so the example runs without an API key."""
+_api_key = os.environ.get("GEMINI_API_KEY")
 
-    def generate_content(self, prompt: str) -> object:
-        class _Response:
-            text = "Jane Doe"  # placeholder
+if _api_key:
+    _name_strategy = GeminiNameStrategy.from_api_key(_api_key)
+else:
+    class _StubLLMClient:
+        """Fallback when no API key is provided."""
+        def generate_content(self, prompt: str) -> object:
+            class _Response:
+                text = "[set GEMINI_API_KEY to extract real name]"
+            return _Response()
 
-        return _Response()
+    _name_strategy = GeminiNameStrategy(client=_StubLLMClient())
 
 
 # ---------------------------------------------------------------------------
@@ -43,10 +48,10 @@ class _StubLLMClient:
 # ---------------------------------------------------------------------------
 
 framework = ResumeParserFramework(
-    file_parser=PDFParser(),
+    parsers={".pdf": PDFParser()},
     resume_extractor=ResumeExtractor(
         extractors={
-            "name": NameExtractor(strategy=GeminiNameStrategy(client=_StubLLMClient())),
+            "name": NameExtractor(strategy=_name_strategy),
             "email": EmailExtractor(strategy=RegexEmailStrategy()),
             "skills": SkillsExtractor(strategy=RuleBasedSkillsStrategy()),
         }

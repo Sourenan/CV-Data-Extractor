@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from app.exceptions import FileParsingError
+from app.exceptions import FileParsingError, UnsupportedFileTypeError
 from app.framework import ResumeParserFramework
 from app.models import ResumeData
 
@@ -18,6 +18,7 @@ from app.models import ResumeData
 def _make_framework(
     parser_text: str = "Jane Doe\njane@example.com\nPython",
     resume_data: ResumeData | None = None,
+    extension: str = ".pdf",
 ) -> tuple[ResumeParserFramework, MagicMock, MagicMock]:
     """Return a framework wired with mocked parser and extractor."""
     if resume_data is None:
@@ -34,7 +35,7 @@ def _make_framework(
     mock_extractor.extract.return_value = resume_data
 
     framework = ResumeParserFramework(
-        file_parser=mock_parser,
+        parsers={extension: mock_parser},
         resume_extractor=mock_extractor,
     )
     return framework, mock_parser, mock_extractor
@@ -72,7 +73,7 @@ class TestResumeParserFramework:
         mock_extractor = MagicMock()
 
         framework = ResumeParserFramework(
-            file_parser=mock_parser,
+            parsers={".pdf": mock_parser},
             resume_extractor=mock_extractor,
         )
 
@@ -93,6 +94,41 @@ class TestResumeParserFramework:
         assert result.skills == []
 
     def test_different_file_paths_are_forwarded_correctly(self):
-        framework, mock_parser, _ = _make_framework()
+        framework, mock_parser, _ = _make_framework(extension=".docx")
         framework.parse_resume("/docs/cv.docx")
         mock_parser.parse.assert_called_once_with("/docs/cv.docx")
+
+    def test_routes_to_correct_parser_by_extension(self):
+        pdf_parser = MagicMock()
+        pdf_parser.parse.return_value = "pdf text"
+        docx_parser = MagicMock()
+        docx_parser.parse.return_value = "docx text"
+
+        mock_extractor = MagicMock()
+        mock_extractor.extract.return_value = ResumeData()
+
+        framework = ResumeParserFramework(
+            parsers={".pdf": pdf_parser, ".docx": docx_parser},
+            resume_extractor=mock_extractor,
+        )
+
+        framework.parse_resume("resume.docx")
+
+        docx_parser.parse.assert_called_once_with("resume.docx")
+        pdf_parser.parse.assert_not_called()
+
+    def test_raises_unsupported_file_type_for_unknown_extension(self):
+        framework, _, _ = _make_framework()
+
+        with pytest.raises(UnsupportedFileTypeError) as exc_info:
+            framework.parse_resume("resume.txt")
+
+        assert ".txt" in str(exc_info.value)
+
+    def test_raises_unsupported_file_type_for_no_extension(self):
+        framework, _, _ = _make_framework()
+
+        with pytest.raises(UnsupportedFileTypeError) as exc_info:
+            framework.parse_resume("resume")
+
+        assert "" in str(exc_info.value)
